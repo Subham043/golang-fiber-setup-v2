@@ -1,0 +1,41 @@
+# Versioning and metadata
+.git
+.gitignore
+.gitattributes
+.idea
+.dockerignore
+
+# Build dependencies
+dist.do
+node_modules
+public
+
+# Environment (contains sensitive data)
+*.env
+
+# Misc
+.eslintrc.js
+.prettierrc
+README.md
+npm-debug.log
+yarn-error.log
+branchlint.config.json
+commitlint.config.js
+.husky
+.styleci.yml
+.editorconfig
+.phpstorm.meta.php
+_ide_helper.php
+_ide_helper_models.php
+.gitlab-ci.yml
+psysh
+setup-local.sh
+_ide_helper_actions.php
+
+# Docker
+mysql
+redis
+minio
+rabbitmq
+Dockerfile
+docker-compose.yml

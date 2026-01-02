@@ -1,0 +1,20 @@
+# macOS
+**/.DS_Store
+
+# Dev build
+build/
+tmp/
+application.exe
+
+# Test
+*.out
+
+# Environment variables
+.env
+
+/node_modules
+
+docker/mysql
+docker/redis
+docker/minio
+docker/rabbitmq

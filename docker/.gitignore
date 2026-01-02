@@ -1,0 +1,6 @@
+/mysql
+.env
+/backup
+/rabbitmq
+/redis
+/minio
