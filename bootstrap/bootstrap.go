@@ -2,7 +2,6 @@ package bootstrap
 
 import (
 	"github.com/subham043/golang-fiber-setup/app/middlewares"
-	"github.com/subham043/golang-fiber-setup/app/modules/health"
 	"github.com/subham043/golang-fiber-setup/app/router"
 	"github.com/subham043/golang-fiber-setup/bootstrap/config"
 	"github.com/subham043/golang-fiber-setup/bootstrap/logger"
@@ -17,7 +16,6 @@ func Module() fx.Option {
 		logger.Module(),
 		redis.Module(),
 		middlewares.Module(),
-		health.Module(),
 		router.Module(),
 		server.Module(),
 	)

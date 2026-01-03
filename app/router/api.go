@@ -32,5 +32,6 @@ func (r *Router) Register() {
 func Module() fx.Option {
 	return fx.Options(
 		fx.Provide(NewRouter),
+		health.Module(),
 	)
 }

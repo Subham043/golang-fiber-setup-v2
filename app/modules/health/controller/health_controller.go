@@ -1,8 +1,11 @@
 package health_controller
 
 import (
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	health_service "github.com/subham043/golang-fiber-setup/app/modules/health/service"
+	response "github.com/subham043/golang-fiber-setup/utils/response"
 )
 
 type HealthController struct {
@@ -21,7 +24,8 @@ func NewHealthController(healthService *health_service.HealthService) *HealthCon
 
 func (h *HealthController) Index(c *fiber.Ctx) error {
 
-	return c.Status(fiber.StatusOK).JSON(map[string]string{
-		"message": h.healthService.Index(),
+	return response.Json(c, response.Response{
+		Message: h.healthService.Index(),
+		Data:    fiber.Map{"time": time.Now().Format("2006-01-02 15:04:05")},
 	})
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/subham043/golang-fiber-setup/app/middlewares"
 	"github.com/subham043/golang-fiber-setup/app/router"
 	"github.com/subham043/golang-fiber-setup/bootstrap/config"
+	error_handler "github.com/subham043/golang-fiber-setup/utils/error"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
@@ -37,7 +38,7 @@ func fiberConfig(config config.ServerConfig) fiber.Config {
 		EnableSplittingOnParsers: true,
 		Prefork:                  true,
 		ReadTimeout:              time.Second * time.Duration(config.ReadTimeout),
-		// ErrorHandler:             utils.ErrorHandler,
+		ErrorHandler:             error_handler.ServerErrorHandler,
 	}
 }
 

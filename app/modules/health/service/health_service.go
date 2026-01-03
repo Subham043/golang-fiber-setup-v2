@@ -11,6 +11,5 @@ func NewHealthService() *HealthService {
 }
 
 func (h *HealthService) Index() string {
-
 	return "OK"
 }

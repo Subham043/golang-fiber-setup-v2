@@ -32,8 +32,9 @@ func NewMiddleware(app *fiber.App, cfg *config.Config, redis *redis.Storage, log
 	}
 }
 
+// Add Global Middlewares
 func (m *Middleware) Register() {
-	// Add Middlewares
+
 	m.App.Use(cors.CorsMiddleware(m.Cfg.Cors))
 
 	m.App.Use(helmet.HelmetMiddleware())
