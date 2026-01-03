@@ -6,6 +6,7 @@ import (
 	"github.com/subham043/golang-fiber-setup/app/middlewares/cors"
 	"github.com/subham043/golang-fiber-setup/app/middlewares/encrypt_cookie"
 	"github.com/subham043/golang-fiber-setup/app/middlewares/helmet"
+	"github.com/subham043/golang-fiber-setup/app/middlewares/jwt"
 	"github.com/subham043/golang-fiber-setup/app/middlewares/limiter"
 	"github.com/subham043/golang-fiber-setup/app/middlewares/logger"
 	"github.com/subham043/golang-fiber-setup/app/middlewares/recover"
@@ -85,6 +86,7 @@ func Module() fx.Option {
 		helmet.Module(),
 		compress.Module(),
 		request_id.Module(),
+		jwt.Module(),
 		fx.Provide(NewMiddleware),
 	)
 }

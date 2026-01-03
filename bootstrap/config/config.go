@@ -49,12 +49,49 @@ type CorsConfig struct {
 	MaxAge             int
 }
 
+type MinioConfig struct {
+	MinioRootUser     string
+	MinioRootPassword string
+	MinioPort         int
+	MinioEndpoint     string
+}
+
+type MailConfig struct {
+	MailHost        string
+	MailPort        int
+	MailUsername    string
+	MailPassword    string
+	MailFromAddress string
+	MailFromName    string
+}
+
+type RabbitMQConfig struct {
+	RabbitMQHost      string
+	RabbitMQPort      int
+	RabbitMQUsername  string
+	RabbitMQPassword  string
+	RabbitMQQueueName string
+}
+
+type SessionConfig struct {
+	SessionCookie   string
+	SessionPath     string
+	SessionDomain   string
+	SessionLifetime int
+	SessionSecure   bool
+	SessionHttpOnly bool
+}
+
 type Config struct {
-	Server ServerConfig
-	JWT    JWTConfig
-	DB     DBConfig
-	Redis  RedisConfig
-	Cors   CorsConfig
+	Server   ServerConfig
+	JWT      JWTConfig
+	DB       DBConfig
+	Redis    RedisConfig
+	Cors     CorsConfig
+	Minio    MinioConfig
+	Mail     MailConfig
+	RabbitMQ RabbitMQConfig
+	Session  SessionConfig
 }
 
 func LoadConfig() *Config {
@@ -105,6 +142,35 @@ func LoadConfig() *Config {
 			AllowedCredentials: viper.GetBool("CORS_ALLOWED_CREDENTIALS"),
 			ExposeHeaders:      viper.GetString("CORS_EXPOSE_HEADERS"),
 			MaxAge:             viper.GetInt("CORS_MAX_AGE"),
+		},
+		Minio: MinioConfig{
+			MinioRootUser:     viper.GetString("MINIO_ROOT_USER"),
+			MinioRootPassword: viper.GetString("MINIO_ROOT_PASSWORD"),
+			MinioPort:         viper.GetInt("MINIO_PORT"),
+			MinioEndpoint:     viper.GetString("MINIO_ENDPOINT"),
+		},
+		Mail: MailConfig{
+			MailHost:        viper.GetString("MAIL_HOST"),
+			MailPort:        viper.GetInt("MAIL_PORT"),
+			MailUsername:    viper.GetString("MAIL_USERNAME"),
+			MailPassword:    viper.GetString("MAIL_PASSWORD"),
+			MailFromAddress: viper.GetString("MAIL_FROM_ADDRESS"),
+			MailFromName:    viper.GetString("MAIL_FROM_NAME"),
+		},
+		RabbitMQ: RabbitMQConfig{
+			RabbitMQHost:      viper.GetString("RABBITMQ_HOST"),
+			RabbitMQPort:      viper.GetInt("RABBITMQ_PORT"),
+			RabbitMQUsername:  viper.GetString("RABBITMQ_USERNAME"),
+			RabbitMQPassword:  viper.GetString("RABBITMQ_PASSWORD"),
+			RabbitMQQueueName: viper.GetString("RABBITMQ_QUEUE_NAME"),
+		},
+		Session: SessionConfig{
+			SessionCookie:   viper.GetString("SESSION_COOKIE"),
+			SessionPath:     viper.GetString("SESSION_PATH"),
+			SessionDomain:   viper.GetString("SESSION_DOMAIN"),
+			SessionLifetime: viper.GetInt("SESSION_LIFETIME"),
+			SessionSecure:   viper.GetBool("SESSION_SECURE"),
+			SessionHttpOnly: viper.GetBool("SESSION_HTTP_ONLY"),
 		},
 	}
 
