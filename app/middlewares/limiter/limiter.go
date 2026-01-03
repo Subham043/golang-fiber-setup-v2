@@ -7,7 +7,21 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/storage/redis/v3"
 	error_handler "github.com/subham043/golang-fiber-setup/utils/error"
+	"go.uber.org/fx"
 )
+
+type LimiterMiddleware struct {
+	Redis *redis.Storage
+}
+
+type ILimiterMiddleware interface {
+	GlobalLimiterMiddleware() fiber.Handler
+	AuthLimiterMiddleware() fiber.Handler
+}
+
+func NewLimiterMiddleware(redis *redis.Storage) *LimiterMiddleware {
+	return &LimiterMiddleware{Redis: redis}
+}
 
 // CommonLimiterConfig func for configuration Fiber app.
 // See: "github.com/gofiber/fiber/v2/middleware/limiter"
@@ -18,16 +32,22 @@ func commonLimiterConfig(redis *redis.Storage) limiter.Config {
 	}
 }
 
-func GlobalLimiterMiddleware(redis *redis.Storage) fiber.Handler {
-	cfg := commonLimiterConfig(redis)
+func (l *LimiterMiddleware) GlobalLimiterMiddleware() fiber.Handler {
+	cfg := commonLimiterConfig(l.Redis)
 	cfg.Max = 100
 	cfg.Expiration = 60 * time.Second
 	return limiter.New(cfg)
 }
 
-func AuthLimiterMiddleware(redis *redis.Storage) fiber.Handler {
-	cfg := commonLimiterConfig(redis)
+func (l *LimiterMiddleware) AuthLimiterMiddleware() fiber.Handler {
+	cfg := commonLimiterConfig(l.Redis)
 	cfg.Max = 3
 	cfg.Expiration = 60 * time.Second
 	return limiter.New(cfg)
+}
+
+func Module() fx.Option {
+	return fx.Options(
+		fx.Provide(NewLimiterMiddleware),
+	)
 }

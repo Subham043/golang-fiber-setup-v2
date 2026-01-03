@@ -4,10 +4,25 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
 
-func ZapHTTPLoggerMiddleware(log *zap.Logger) fiber.Handler {
+type LoggerMiddleware struct {
+	Log *zap.Logger
+}
+
+type ILoggerMiddleware interface {
+	ZapHTTPLoggerMiddleware() fiber.Handler
+}
+
+func NewLoggerMiddleware(log *zap.Logger) *LoggerMiddleware {
+	return &LoggerMiddleware{
+		Log: log,
+	}
+}
+
+func (l *LoggerMiddleware) ZapHTTPLoggerMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		start := time.Now()
 
@@ -29,13 +44,19 @@ func ZapHTTPLoggerMiddleware(log *zap.Logger) fiber.Handler {
 
 		switch {
 		case status >= 500:
-			log.Error("http_request", fields...)
+			l.Log.Error("http_request", fields...)
 		case status >= 400:
-			log.Warn("http_request", fields...)
+			l.Log.Warn("http_request", fields...)
 		default:
-			log.Info("http_request", fields...)
+			l.Log.Info("http_request", fields...)
 		}
 
 		return err
 	}
+}
+
+func Module() fx.Option {
+	return fx.Options(
+		fx.Provide(NewLoggerMiddleware),
+	)
 }

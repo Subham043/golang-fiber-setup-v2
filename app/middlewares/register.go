@@ -2,7 +2,6 @@ package middlewares
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/storage/redis/v3"
 	"github.com/subham043/golang-fiber-setup/app/middlewares/compress"
 	"github.com/subham043/golang-fiber-setup/app/middlewares/cors"
 	"github.com/subham043/golang-fiber-setup/app/middlewares/encrypt_cookie"
@@ -11,45 +10,53 @@ import (
 	"github.com/subham043/golang-fiber-setup/app/middlewares/logger"
 	"github.com/subham043/golang-fiber-setup/app/middlewares/recover"
 	"github.com/subham043/golang-fiber-setup/app/middlewares/request_id"
-	"github.com/subham043/golang-fiber-setup/bootstrap/config"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 )
 
 type Middleware struct {
-	App   *fiber.App
-	Cfg   *config.Config
-	Redis *redis.Storage
-	Log   *zap.Logger
+	App                 *fiber.App
+	Limiter             *limiter.LimiterMiddleware
+	GlobalEncryptCookie *encrypt_cookie.EncryptCookieMiddleware
+	Cors                *cors.CorsMiddleware
+	Recover             *recover.RecoverMiddleware
+	Logger              *logger.LoggerMiddleware
+	Helmet              *helmet.HelmetMiddleware
+	Compress            *compress.CompressMiddleware
+	RequestID           *request_id.RequestIDMiddleware
 }
 
-func NewMiddleware(app *fiber.App, cfg *config.Config, redis *redis.Storage, log *zap.Logger) *Middleware {
+func NewMiddleware(app *fiber.App, limiter *limiter.LimiterMiddleware, globalEncryptCookie *encrypt_cookie.EncryptCookieMiddleware, cors *cors.CorsMiddleware, recover *recover.RecoverMiddleware, logger *logger.LoggerMiddleware, helmet *helmet.HelmetMiddleware, compress *compress.CompressMiddleware, requestID *request_id.RequestIDMiddleware) *Middleware {
 	return &Middleware{
-		App:   app,
-		Cfg:   cfg,
-		Redis: redis,
-		Log:   log,
+		App:                 app,
+		Limiter:             limiter,
+		GlobalEncryptCookie: globalEncryptCookie,
+		Cors:                cors,
+		Recover:             recover,
+		Logger:              logger,
+		Helmet:              helmet,
+		Compress:            compress,
+		RequestID:           requestID,
 	}
 }
 
 // Add Global Middlewares
 func (m *Middleware) Register() {
 
-	m.App.Use(cors.CorsMiddleware(m.Cfg.Cors))
+	m.App.Use(m.Cors.CorsMiddleware())
 
-	m.App.Use(helmet.HelmetMiddleware())
+	m.App.Use(m.Helmet.HelmetMiddleware())
 
-	m.App.Use(compress.CompressMiddleware())
+	m.App.Use(m.Compress.CompressMiddleware())
 
-	m.App.Use(request_id.RequestIDMiddleware())
+	m.App.Use(m.RequestID.RequestIDMiddleware())
 
-	m.App.Use(recover.RecoverMiddleware(m.Cfg.Server))
+	m.App.Use(m.Recover.RecoverMiddleware())
 
-	m.App.Use(limiter.GlobalLimiterMiddleware(m.Redis))
+	m.App.Use(m.Limiter.GlobalLimiterMiddleware())
 
-	m.App.Use(encrypt_cookie.EncryptCookieMiddleware(m.Cfg.Server))
+	m.App.Use(m.GlobalEncryptCookie.EncryptCookieMiddleware())
 
-	m.App.Use(logger.ZapHTTPLoggerMiddleware(m.Log))
+	m.App.Use(m.Logger.ZapHTTPLoggerMiddleware())
 
 	// m.App.Use(pprof.New(pprof.Config{
 	// 	Next: utils.IsEnabled(m.Cfg.Middleware.Pprof.Enable),
@@ -70,6 +77,14 @@ func (m *Middleware) Register() {
 // Module returns a fx.Option that configures the middlewares.
 func Module() fx.Option {
 	return fx.Options(
+		limiter.Module(),
+		encrypt_cookie.Module(),
+		cors.Module(),
+		recover.Module(),
+		logger.Module(),
+		helmet.Module(),
+		compress.Module(),
+		request_id.Module(),
 		fx.Provide(NewMiddleware),
 	)
 }
