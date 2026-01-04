@@ -3,11 +3,11 @@ package response
 import "github.com/gofiber/fiber/v2"
 
 type Response struct {
-	Code    int       `json:"code"`
-	Path    string    `json:"path,omitempty"`
-	Message string    `json:"message,omitempty"`
-	Data    fiber.Map `json:"data,omitempty"`
-	Errors  fiber.Map `json:"errors,omitempty"`
+	Code    int    `json:"code"`
+	Path    string `json:"path,omitempty"`
+	Message string `json:"message,omitempty"`
+	Data    any    `json:"data,omitempty"`
+	Errors  any    `json:"errors,omitempty"`
 }
 
 // A fuction to return beautiful responses.

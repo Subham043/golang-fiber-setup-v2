@@ -11,9 +11,9 @@ import (
 
 // A struct to handle error with custom error handler.
 type Error struct {
-	Code    int       `json:"code"`
-	Message string    `json:"message,omitempty"`
-	Errors  fiber.Map `json:"errors,omitempty"`
+	Code    int    `json:"code"`
+	Message string `json:"message,omitempty"`
+	Errors  any    `json:"errors,omitempty"`
 }
 
 // Implement the error interface
@@ -29,22 +29,22 @@ func ServerErrorHandler(c *fiber.Ctx, err error) error {
 		Message: err.Error(),
 	}
 
-	switch {
+	switch e := err.(type) {
 	//check fiber error
-	case err.(*fiber.Error) != nil:
-		errResponse.Code = err.(*fiber.Error).Code
-		errResponse.Message = err.(*fiber.Error).Message
+	case *fiber.Error:
+		errResponse.Code = e.Code
+		errResponse.Message = e.Message
 
 	//check custom error
-	case err.(*Error) != nil:
-		errResponse.Code = err.(*Error).Code
-		errResponse.Message = err.(*Error).Message
+	case *Error:
+		errResponse.Code = e.Code
+		errResponse.Message = e.Message
 
 	//check validation error
-	case err.(*validation.Errors) != nil:
+	case validation.Errors:
 		errResponse.Code = fiber.StatusBadRequest
 		errResponse.Message = fiber.ErrBadRequest.Error()
-		errResponse.Errors = fiber.Map{"errors": err.(*validation.Errors).Filter()}
+		errResponse.Errors = e.Filter()
 	}
 
 	// errFields := []zap.Field{

@@ -26,6 +26,6 @@ func (h *HealthController) Index(c *fiber.Ctx) error {
 
 	return response.Json(c, response.Response{
 		Message: h.healthService.Index(),
-		Data:    fiber.Map{"time": time.Now().Format("2006-01-02 15:04:05")},
+		Data:    time.Now().Format("2006-01-02 15:04:05"),
 	})
 }
