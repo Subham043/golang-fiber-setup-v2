@@ -95,7 +95,14 @@ type Config struct {
 }
 
 func LoadConfig() *Config {
-	viper.SetConfigFile("../docker/.env")
+	viper.SetConfigName(".env")
+	viper.SetConfigType("env")
+
+	// Search paths (in priority order)
+	viper.AddConfigPath(".")          // project root
+	viper.AddConfigPath("./docker")   // local docker setup
+	viper.AddConfigPath("/app")       // docker container
+	viper.AddConfigPath("/etc/myapp") // linux prod
 
 	viper.AutomaticEnv()
 
