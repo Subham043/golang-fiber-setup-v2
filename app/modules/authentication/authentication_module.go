@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/subham043/golang-fiber-setup/app/middlewares/limiter"
 	authentication_controller "github.com/subham043/golang-fiber-setup/app/modules/authentication/controller"
+	authentication_service "github.com/subham043/golang-fiber-setup/app/modules/authentication/service"
 	"go.uber.org/fx"
 )
 
@@ -28,16 +29,18 @@ func (r *AuthenticationRouter) RegisterAuthenticationRoutes() {
 	group := r.App.Group("/api/v1/auth")
 
 	// Apply middleware to the group
-	// group.Use(r.Middleware.AuthLimiterMiddleware())
+	group.Use(r.Middleware.AuthLimiterMiddleware())
 
 	// Define routes
 	group.Post("/login", r.Controller.Login)
+	group.Post("/register", r.Controller.Register)
 }
 
 // Module returns a fx.Option that configures the health module.
 func Module() fx.Option {
 	return fx.Options(
 		fx.Provide(authentication_controller.NewAuthenticationController),
+		fx.Provide(authentication_service.NewAuthenticationService),
 		fx.Provide(NewAuthenticationRouter),
 	)
 }

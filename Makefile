@@ -90,3 +90,11 @@ swag:
 
 check.air:
 	@command -v air >/dev/null 2>&1 || { echo "❌ air not installed"; exit 1; }
+
+# Tidy
+tidy:
+	go mod tidy
+
+# Generate Ent boilerplate
+generate:
+	go generate ./cmd

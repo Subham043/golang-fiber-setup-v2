@@ -4,6 +4,7 @@ import (
 	"github.com/subham043/golang-fiber-setup/app/middlewares"
 	"github.com/subham043/golang-fiber-setup/app/router"
 	"github.com/subham043/golang-fiber-setup/bootstrap/config"
+	database "github.com/subham043/golang-fiber-setup/bootstrap/database/client"
 	"github.com/subham043/golang-fiber-setup/bootstrap/logger"
 	"github.com/subham043/golang-fiber-setup/bootstrap/server"
 	"github.com/subham043/golang-fiber-setup/bootstrap/storage/redis"
@@ -18,5 +19,6 @@ func Module() fx.Option {
 		middlewares.Module(),
 		router.Module(),
 		server.Module(),
+		database.Module(),
 	)
 }

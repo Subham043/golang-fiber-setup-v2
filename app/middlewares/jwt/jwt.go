@@ -7,6 +7,7 @@ import (
 	jwtMiddleware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/subham043/golang-fiber-setup/bootstrap/config"
 	error_handler "github.com/subham043/golang-fiber-setup/utils/error"
 	"go.uber.org/fx"
@@ -17,7 +18,7 @@ type JWTMiddleware struct {
 }
 
 type JWTUserDTO struct {
-	ID    string
+	ID    uuid.UUID
 	Email string
 	Name  string
 }
